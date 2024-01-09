@@ -1,3 +1,5 @@
+// Simple UTF-8 Japanese text file viewer with Nano-X for ELKS
+// 2024 T.Yamada
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
@@ -147,18 +149,26 @@ int main(int argc, char **argv)
       uni_c = (unsigned long) utf8_c;
     }
 
-    /* print Text */
-    printUni(uni_c);
-
-    GrBitmap(w1, gc1, 8+x*8, 30+y*8, 8, 8, bitmaptxt);
-    if (x < 63) {
-      x++;
-    }
-    else {
+    if (uni_c == '\n') { // Line Feed
       x = 0;
       y++;
     }
+    else if (uni_c == '\r') { // Carriage Return
+      x = 0;
+    }
+    else {
+      /* print Text */
+      printUni(uni_c);
 
+      GrBitmap(w1, gc1, 8+x*8, 30+y*8, 8, 8, bitmaptxt);
+      if (x < 63) {
+        x++;
+      }
+      else {
+        x = 0;
+        y++;
+      }
+    }
   }
 
   return 0;
