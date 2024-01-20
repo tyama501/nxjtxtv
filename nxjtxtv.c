@@ -9,6 +9,8 @@
 #define HAVEBLIT 0
 #define FONT_NAME "misaki"
 #define FILE_COUNT 9
+#define TEXT_COL 76
+#define TEXT_ROW 43
 
 typedef struct {
   unsigned int font_count;
@@ -20,6 +22,9 @@ static GR_WINDOW_ID w1;
 static GR_GC_ID gc1;
 static GR_SCREEN_INFO si;
 static GR_BITMAP bitmaptxt[8];
+static GR_EVENT gr_eve;
+
+static FILE *fptxt;
 
 static font_header_t font_header[FILE_COUNT];
 static char __far *fontbmp[FILE_COUNT];
@@ -44,11 +49,28 @@ void printUni(unsigned long uni_c)
   }
 }
 
+/* wait key for next page or quit*/
+void waitKeyEvent(void)
+{
+  while (1) {
+    GrGetNextEventTimeout(&gr_eve, GR_TIMEOUT_BLOCK);
+    if (gr_eve.type == GR_EVENT_TYPE_KEY_DOWN) {
+      if (gr_eve.keystroke.ch == 'q') {
+        fclose(fptxt);
+        GrClose();
+        exit(0);
+      }
+      else if (gr_eve.keystroke.ch == 'n') {
+        break;
+      }
+    }
+  }
+}
+
 int main(int argc, char **argv)
 {
   char font_file[15];
 
-  FILE *fptxt;
   FILE *fpfont;
   FILE *fpfont_off;
 
@@ -72,14 +94,16 @@ int main(int argc, char **argv)
 
   GrGetScreenInfo(&si);
 
-  w1 = GrNewWindow(GR_ROOT_WINDOW_ID, 50, 30, si.cols - 80, si.rows - 60, 1, BLACK, LTBLUE);
+  w1 = GrNewWindow(GR_ROOT_WINDOW_ID, 8, 8, si.cols - 16, si.rows - 24, 1, WHITE, LTBLUE);
+
+  GrSelectEvents(w1, GR_EVENT_MASK_KEY_DOWN);
 
   GrMapWindow(w1);
 
   gc1 = GrNewGC();
 
-  GrSetGCForeground(gc1, WHITE);
-  GrSetGCBackground(gc1, BLACK);
+  GrSetGCForeground(gc1, BLACK);
+  GrSetGCBackground(gc1, WHITE);
 
   /* Read Font files */
   for (int i = 0; i < FILE_COUNT; i++) {
@@ -126,7 +150,6 @@ int main(int argc, char **argv)
 
   }
 
-
   while ((utf8_c = getc(fptxt)) != EOF) {
 
     /* Convert UTF-8 to Unicode */
@@ -152,6 +175,11 @@ int main(int argc, char **argv)
     if (uni_c == '\n') { // Line Feed
       x = 0;
       y++;
+      if (y == TEXT_ROW) {
+        waitKeyEvent();
+        y = 0;
+        GrClearWindow(w1, GR_FALSE);
+      }
     }
     else if (uni_c == '\r') { // Carriage Return
       x = 0;
@@ -160,16 +188,23 @@ int main(int argc, char **argv)
       /* print Text */
       printUni(uni_c);
 
-      GrBitmap(w1, gc1, 8+x*8, 30+y*8, 8, 8, bitmaptxt);
-      if (x < 63) {
+      GrBitmap(w1, gc1, 8+x*8, 8+y*8, 8, 8, bitmaptxt);
+      if (x < TEXT_COL-1) {
         x++;
       }
       else {
         x = 0;
         y++;
+        if (y == TEXT_ROW) {
+          waitKeyEvent();
+          y = 0;
+          GrClearWindow(w1, GR_FALSE);
+        }
       }
     }
   }
 
+  fclose(fptxt);
+  GrClose();
   return 0;
 }
