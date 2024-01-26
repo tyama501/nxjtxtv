@@ -98,6 +98,8 @@ int main(int argc, char **argv)
 
   GrSelectEvents(w1, GR_EVENT_MASK_KEY_DOWN);
 
+  GdHideCursor();
+
   GrMapWindow(w1);
 
   gc1 = GrNewGC();
