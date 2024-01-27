@@ -1,6 +1,8 @@
 # ELKS向け簡易UTF-8 日本語テキストViewer with Nano-X
 Simple UTF-8 Japanese text file viewer with Nano-X for ELKS  
-
+  
+<img src=image/nxjtxtv_elks.png width="320pix">
+  
 Embeddable Linux Kernel Subset (ELKS)は以下で開発されている8086等Intel IA16アーキテクチャ向けのLinux-LikeなOSです。  
 https://github.com/ghaerr/elks  
 
@@ -17,7 +19,7 @@ conbdf modified
 https://github.com/tyama501/nxjtxtv/blob/main/font/convbdf_out8.c  
   
 misaki0.bin - misakia.bin,  
-misaki0o.bin - misakiao.binをカレントディレクトリまたは/lib/fontに置いてください。  
+misaki0o.bin - misakiao.binをカレントディレクトリまたは/lib/font/に置いてください。  
 (misaki*o.binはunicodeからフォント格納位置に変換するためのものです。)  
 
 ## How to use
