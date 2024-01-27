@@ -207,6 +207,10 @@ int main(int argc, char **argv)
       x = 0;
     }
     else {
+      if (uni_c == '\t') { // Replace tab with space
+        uni_c = 0x20;
+      }
+
       /* print Text */
       printUni(uni_c);
 
@@ -225,6 +229,8 @@ int main(int argc, char **argv)
       }
     }
   }
+
+  waitKeyEvent();
 
   fclose(fptxt);
   GrClose();
