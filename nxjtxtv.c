@@ -9,7 +9,7 @@
 #define HAVEBLIT 0
 #define FONT_NAME "misaki"
 #define FONT_DIR "/lib/font/"
-#define FILE_COUNT 9
+#define FILE_COUNT 12
 #define TEXT_COL 76
 #define TEXT_ROW 43
 
