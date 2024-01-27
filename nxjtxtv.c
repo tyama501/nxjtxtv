@@ -8,6 +8,7 @@
 
 #define HAVEBLIT 0
 #define FONT_NAME "misaki"
+#define FONT_DIR "/lib/font/"
 #define FILE_COUNT 9
 #define TEXT_COL 76
 #define TEXT_ROW 43
@@ -89,7 +90,7 @@ void waitKeyEvent(void)
 
 int main(int argc, char **argv)
 {
-  char font_file[15];
+  char font_file[25];
 
   FILE *fpfont;
   FILE *fpfont_off;
@@ -103,44 +104,26 @@ int main(int argc, char **argv)
   int x = 0;
   int y = 0;
 
-  if (GrOpen() < 0) {
-    exit(1);
-  }
-
-  if (!(fptxt = fopen(argv[1], "r"))) {
-    printf("Cannot open %s\n", argv[1]);
-    exit(1);
-  }
-
-  GrGetScreenInfo(&si);
-
-  w1 = GrNewWindow(GR_ROOT_WINDOW_ID, 8, 8, si.cols - 16, si.rows - 24, 1, WHITE, LTBLUE);
-
-  GrSelectEvents(w1, GR_EVENT_MASK_KEY_DOWN);
-
-  GdHideCursor();
-
-  GrMapWindow(w1);
-
-  gc1 = GrNewGC();
-
-  GrSetGCForeground(gc1, BLACK);
-  GrSetGCBackground(gc1, WHITE);
-
   /* Read Font files */
   for (int i = 0; i < FILE_COUNT; i++) {
-    sprintf(font_file, "%s%d%s", FONT_NAME, i, ".bin");
+    sprintf(font_file, "%s%x%s", FONT_NAME, i, ".bin");
 
     if (!(fpfont = fopen(font_file, "rb"))) {
-      printf("Cannot open fonts %s\n", font_file);
-      exit(1);
+      sprintf(font_file, "%s%s%x%s", FONT_DIR, FONT_NAME, i, ".bin");
+      if (!(fpfont = fopen(font_file, "rb"))) {
+        printf("Cannot open fonts %s\n", font_file);
+        exit(1);
+      }
     }
 
-    sprintf(font_file, "%s%d%s", FONT_NAME, i, "o.bin");
+    sprintf(font_file, "%s%x%s", FONT_NAME, i, "o.bin");
 
     if (!(fpfont_off = fopen(font_file, "rb"))) {
-      printf("Cannot open fonts offsets %s\n", font_file);
-      exit(1);
+      sprintf(font_file, "%s%s%x%s", FONT_DIR, FONT_NAME, i, "o.bin");
+      if (!(fpfont_off = fopen(font_file, "rb"))) {
+        printf("Cannot open fonts offsets %s\n", font_file);
+        exit(1);
+      }
     }
 
     font_header[i].font_count = getc(fpfont_off);
@@ -171,6 +154,32 @@ int main(int argc, char **argv)
     fclose(fpfont_off);
 
   }
+
+  if (!(fptxt = fopen(argv[1], "r"))) {
+    printf("Cannot open %s\n", argv[1]);
+    exit(1);
+  }
+
+  /* start nano-X */
+  if (GrOpen() < 0) {
+    exit(1);
+  }
+
+  GrGetScreenInfo(&si);
+
+  w1 = GrNewWindow(GR_ROOT_WINDOW_ID, 8, 8, si.cols - 16, si.rows - 24, 1, WHITE, LTBLUE);
+
+  GrSelectEvents(w1, GR_EVENT_MASK_KEY_DOWN);
+
+  GdHideCursor();
+
+  GrMapWindow(w1);
+
+  gc1 = GrNewGC();
+
+  GrSetGCForeground(gc1, BLACK);
+  GrSetGCBackground(gc1, WHITE);
+
 
   while ((utf8_c = getc(fptxt)) != EOF) {
 
