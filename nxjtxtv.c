@@ -49,9 +49,29 @@ void printUni(unsigned long uni_c)
   }
 }
 
+/* print key message */
+void printKeyM(void)
+{
+  char key_m[] = "n: next page, q : quit";
+  int mi = 0;
+
+  GrSetGCForeground(gc1, WHITE);
+  GrSetGCBackground(gc1, BLACK);
+
+  while (key_m[mi] != '\0') {
+    printUni((unsigned long) key_m[mi]);
+    GrBitmap(w1, gc1, 8+mi*8, 8+(TEXT_ROW+2)*8, 8, 8, bitmaptxt);
+    mi++;
+  }
+
+  GrSetGCForeground(gc1, BLACK);
+  GrSetGCBackground(gc1, WHITE);
+}
+
 /* wait key for next page or quit*/
 void waitKeyEvent(void)
 {
+  printKeyM();
   while (1) {
     GrGetNextEventTimeout(&gr_eve, GR_TIMEOUT_BLOCK);
     if (gr_eve.type == GR_EVENT_TYPE_KEY_DOWN) {
