@@ -18,8 +18,8 @@ https://github.com/ghaerr/microwindows/blob/master/src/fonts/tools/convbdf.c
 conbdf modified  
 https://github.com/tyama501/nxjtxtv/blob/main/font/convbdf_out8.c  
   
-misaki0.bin - misakia.bin,  
-misaki0o.bin - misakiao.binをカレントディレクトリまたは/lib/font/に置いてください。  
+misaki0.bin - misakib.bin,  
+misaki0o.bin - misakibo.binをカレントディレクトリまたは/lib/font/に置いてください。  
 (misaki*o.binはunicodeからフォント格納位置に変換するためのものです。)  
 
 ## How to use
