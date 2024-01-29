@@ -41,4 +41,8 @@ elks/elkscmd/nano-X/Makefileに以下を加えて下さい。
             $(LD) $(LDFLAGS) -maout-heap=0xffff $(NANOXFILES) demos/nxjtxtv.o $(SERVFILES) $(NANOLIBS) $(LIBS) -o bin/nxjtxtv $(MATHLIB) $(LDLIBS)
 
 elks/elkscmd/nano-X/でmake clean, makeを行うと  
-elks/elkscmd/nano-X/bin/にnxjtxtvができます。
+elks/elkscmd/nano-X/bin/にnxjtxtvができます。  
+  
+このテキストViewerで使われているnano-XのソースコードはELKSのリポジトリをご参照ください。
+https://github.com/ghaerr/elks/tree/master/elkscmd/nano-X
+
