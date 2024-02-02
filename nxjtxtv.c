@@ -10,8 +10,6 @@
 #define FONT_NAME "misaki"
 #define FONT_DIR "/lib/font/"
 #define FILE_COUNT 12
-#define TEXT_COL 76
-#define TEXT_ROW 43
 
 typedef struct {
   unsigned int font_count;
@@ -30,6 +28,9 @@ static FILE *fptxt;
 static font_header_t font_header[FILE_COUNT];
 static char __far *fontbmp[FILE_COUNT];
 static int __far *fontoffset[FILE_COUNT];
+
+static int text_col;
+static int text_row;
 
 /* print Unicode */
 void printUni(unsigned long uni_c)
@@ -61,7 +62,7 @@ void printKeyM(void)
 
   while (key_m[mi] != '\0') {
     printUni((unsigned long) key_m[mi]);
-    GrBitmap(w1, gc1, 8+mi*8, 8+(TEXT_ROW+2)*8, 8, 8, bitmaptxt);
+    GrBitmap(w1, gc1, 8+mi*8, 8+(text_row+2)*8, 8, 8, bitmaptxt);
     mi++;
   }
 
@@ -169,6 +170,9 @@ int main(int argc, char **argv)
 
   w1 = GrNewWindow(GR_ROOT_WINDOW_ID, 8, 8, si.cols - 16, si.rows - 24, 1, WHITE, LTBLUE);
 
+  text_col = (si.cols - 16) / 8 - 2;
+  text_row = (si.rows - 24) / 8 - 4;
+
   GrSelectEvents(w1, GR_EVENT_MASK_KEY_DOWN);
 
   GdHideCursor();
@@ -206,7 +210,7 @@ int main(int argc, char **argv)
     if (uni_c == '\n') { // Line Feed
       x = 0;
       y++;
-      if (y == TEXT_ROW) {
+      if (y == text_row) {
         waitKeyEvent();
         y = 0;
         GrClearWindow(w1, GR_FALSE);
@@ -224,13 +228,13 @@ int main(int argc, char **argv)
       printUni(uni_c);
 
       GrBitmap(w1, gc1, 8+x*8, 8+y*8, 8, 8, bitmaptxt);
-      if (x < TEXT_COL-1) {
+      if (x < text_col-1) {
         x++;
       }
       else {
         x = 0;
         y++;
-        if (y == TEXT_ROW) {
+        if (y == text_row) {
           waitKeyEvent();
           y = 0;
           GrClearWindow(w1, GR_FALSE);
