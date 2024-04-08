@@ -156,9 +156,14 @@ int main(int argc, char **argv)
 
   }
 
-  if (!(fptxt = fopen(argv[1], "r"))) {
-    printf("Cannot open %s\n", argv[1]);
-    exit(1);
+  if (argc > 1) {
+    if (!(fptxt = fopen(argv[1], "r"))) {
+      printf("Cannot open %s\n", argv[1]);
+      exit(1);
+    }
+  }
+  else {
+    fptxt = stdin;
   }
 
   /* start nano-X */
