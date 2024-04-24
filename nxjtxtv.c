@@ -134,8 +134,14 @@ int main(int argc, char **argv)
     font_header[i].size = getc(fpfont_off);
     font_header[i].size += (getc(fpfont_off) << 8);
 
-    fontbmp[i] = fmemalloc(font_header[i].font_count*sizeof(char)*8);
-    fontoffset[i] = fmemalloc(font_header[i].size*sizeof(int));
+    if (!(fontbmp[i] = fmemalloc(font_header[i].font_count*sizeof(char)*8))) {
+      printf("Cannot allocate memory\n");
+      exit(1);
+    }
+    if (!(fontoffset[i] = fmemalloc(font_header[i].size*sizeof(int)))) {
+      printf("Cannot allocate memory\n");
+      exit(1);
+    }
 
     putbmp = fontbmp[i];
 
