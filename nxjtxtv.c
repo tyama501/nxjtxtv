@@ -89,6 +89,27 @@ void waitKeyEvent(void)
   }
 }
 
+/* clear col */
+void clearCol(int x, int y)
+{
+  while (x != text_col) {
+    printUni(0x20);
+
+    GrBitmap(w1, gc1, 8+x*8, 8+y*8, 8, 8, bitmaptxt);
+    x++;
+  }
+}
+
+/* clear row */
+void clearRow(int x, int y)
+{
+  while (y != text_row) {
+    clearCol(x, y);
+    x = 0;
+    y++;
+  }
+}
+
 int main(int argc, char **argv)
 {
   char font_file[25];
@@ -219,16 +240,16 @@ int main(int argc, char **argv)
     }
 
     if (uni_c == '\n') { // Line Feed
+      clearCol(x, y);
       x = 0;
       y++;
       if (y == text_row) {
         waitKeyEvent();
         y = 0;
-        GrClearWindow(w1, GR_FALSE);
       }
     }
     else if (uni_c == '\r') { // Carriage Return
-      x = 0;
+      //x = 0;
     }
     else {
       if (uni_c == '\t') { // Replace tab with space
@@ -248,11 +269,13 @@ int main(int argc, char **argv)
         if (y == text_row) {
           waitKeyEvent();
           y = 0;
-          GrClearWindow(w1, GR_FALSE);
         }
       }
     }
   }
+
+  /* clear */
+  clearRow(x, y);
 
   waitKeyEvent();
 
