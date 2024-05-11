@@ -30,6 +30,10 @@ misaki0o.bin - misakibo.binをカレントディレクトリまたは/lib/font/�
     n : next page  
     q : quit  
 
+sjisutf8等をpipeで繋いで表示することもメモリが足りればできます。  
+sjisutf8 sjisfile | nxjtxtv  
+https://github.com/tyama501/sjis-to-utf8_elks
+
 ## Build
 このテキストViewerのBuildにはELKSのBuild環境が必要です。  
 ELKSのBuild環境構築後、elks/elkscmd/nano-X/demos/にnxjtxtv.cを置き、  
