@@ -33,6 +33,13 @@ static int text_col;
 static int text_row;
 static int dmode = 0;
 
+/* print usage */
+void printUsage(void)
+{
+  printf("Usage : nxjtxtv textfile\n");
+  printf("-d : double hight, width mode\n");
+}
+
 /* print Unicode */
 void printUni(unsigned long uni_c)
 {
@@ -215,6 +222,10 @@ int main(int argc, char **argv)
   if (argc > 1) {
     for (int i = 1; i < argc; i++) {
       if (argv[i][0] == '-') {
+	if (argc == 2) {
+	  printUsage();
+	  exit(1);
+	}
 	if (argv[i][1] == 'd') {
 	  dmode = 1;
 	}
@@ -226,8 +237,7 @@ int main(int argc, char **argv)
     }
   }
   else {
-    printf("Usage : nxjtxtv textfile\n");
-    printf("-d : double hight, width mode\n");
+    printUsage();
     exit(1);
   }
 
