@@ -20,7 +20,7 @@ typedef struct {
 static GR_WINDOW_ID w1;
 static GR_GC_ID gc1;
 static GR_SCREEN_INFO si;
-static GR_BITMAP bitmaptxt[8];
+static GR_BITMAP bitmaptxt[16];
 static GR_EVENT gr_eve;
 
 static FILE *fptxt;
@@ -31,20 +31,39 @@ static int __far *fontoffset[FILE_COUNT];
 
 static int text_col;
 static int text_row;
+static int dmode = 0;
 
 /* print Unicode */
 void printUni(unsigned long uni_c)
 {
   char __far *getbmp;
   int __far *getoffset;
+  int sbmp;
 
   for (int i = 0; i < FILE_COUNT; i++) {
     if ((uni_c >=  font_header[i].firstchar) && (uni_c <= (font_header[i].firstchar + font_header[i].size - 1))) {
       getoffset = fontoffset[i] + (uni_c - font_header[i].firstchar);
       getbmp = fontbmp[i] + *getoffset;
-      for (int j = 0; j < 8; j++) {
-        bitmaptxt[j] = (*getbmp << 8);
-        getbmp++;
+      if (dmode) {
+	for (int j = 0; j < 16; j+=2) {
+	  sbmp = *getbmp;
+	  bitmaptxt[j] = 0;
+	  for (int k = 0; k < 8; k++) {
+	    bitmaptxt[j] <<= 2;
+	    if (sbmp & 0x80) {
+	      bitmaptxt[j] |= 3;
+	    }
+	    sbmp <<= 1;
+	  }
+	  bitmaptxt[j+1] = bitmaptxt[j];
+	  getbmp++;
+	}
+      }
+      else {
+	for (int j = 0; j < 8; j++) {
+	  bitmaptxt[j] = (*getbmp << 8);
+	  getbmp++;
+	}
       }
       break;
     }
@@ -62,7 +81,12 @@ void printKeyM(void)
 
   while (key_m[mi] != '\0') {
     printUni((unsigned long) key_m[mi]);
-    GrBitmap(w1, gc1, 8+mi*8, 8+(text_row+2)*8, 8, 8, bitmaptxt);
+    if (dmode) {
+      GrBitmap(w1, gc1, 16+mi*16, 16+(text_row+2)*16, 16, 16, bitmaptxt);
+    }
+    else {
+      GrBitmap(w1, gc1, 8+mi*8, 8+(text_row+2)*8, 8, 8, bitmaptxt);
+    }
     mi++;
   }
 
@@ -95,7 +119,12 @@ void clearCol(int x, int y)
   while (x != text_col) {
     printUni(0x20);
 
-    GrBitmap(w1, gc1, 8+x*8, 8+y*8, 8, 8, bitmaptxt);
+    if (dmode) {
+      GrBitmap(w1, gc1, 16+x*16, 16+y*16, 16, 16, bitmaptxt);
+    }
+    else {
+      GrBitmap(w1, gc1, 8+x*8, 8+y*8, 8, 8, bitmaptxt);
+    }
     x++;
   }
 }
@@ -184,13 +213,22 @@ int main(int argc, char **argv)
   }
 
   if (argc > 1) {
-    if (!(fptxt = fopen(argv[1], "r"))) {
-      printf("Cannot open %s\n", argv[1]);
-      exit(1);
+    for (int i = 1; i < argc; i++) {
+      if (argv[i][0] == '-') {
+	if (argv[i][1] == 'd') {
+	  dmode = 1;
+	}
+      }
+      else if (!(fptxt = fopen(argv[i], "r"))) {
+	printf("Cannot open %s\n", argv[i]);
+	exit(1);
+      }
     }
   }
   else {
-    fptxt = stdin;
+    printf("Usage : nxjtxtv textfile\n");
+    printf("-d : double hight, width mode\n");
+    exit(1);
   }
 
   /* start nano-X */
@@ -202,8 +240,14 @@ int main(int argc, char **argv)
 
   w1 = GrNewWindow(GR_ROOT_WINDOW_ID, 8, 8, si.cols - 16, si.rows - 24, 1, WHITE, LTBLUE);
 
-  text_col = (si.cols - 16) / 8 - 2;
-  text_row = (si.rows - 24) / 8 - 4;
+  if (dmode) {
+    text_col = (si.cols - 16) / 16 - 2;
+    text_row = (si.rows - 24) / 16 - 4;
+  }
+  else {
+    text_col = (si.cols - 16) / 8 - 2;
+    text_row = (si.rows - 24) / 8 - 4;
+  }
 
   GrSelectEvents(w1, GR_EVENT_MASK_KEY_DOWN);
 
@@ -259,7 +303,13 @@ int main(int argc, char **argv)
       /* print Text */
       printUni(uni_c);
 
-      GrBitmap(w1, gc1, 8+x*8, 8+y*8, 8, 8, bitmaptxt);
+      if (dmode) {
+	GrBitmap(w1, gc1, 16+x*16, 16+y*16, 16, 16, bitmaptxt);
+      }
+      else {
+	GrBitmap(w1, gc1, 8+x*8, 8+y*8, 8, 8, bitmaptxt);
+      }
+
       if (x < text_col-1) {
         x++;
       }
