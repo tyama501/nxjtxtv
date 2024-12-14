@@ -237,8 +237,7 @@ int main(int argc, char **argv)
     }
   }
   else {
-    printUsage();
-    exit(1);
+    fptxt = stdin;
   }
 
   /* start nano-X */
