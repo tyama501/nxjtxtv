@@ -30,6 +30,9 @@ misaki0o.bin - misakibo.binをカレントディレクトリまたは/lib/font/�
     n : next page  
     q : quit  
 
+-dで縦横2倍モードになります。  
+nxjtxtv -d textfile  
+
 sjisutf8等をpipeで繋いで表示することもメモリが足りればできます。  
 sjisutf8 sjisfile | nxjtxtv  
 https://github.com/tyama501/sjis-to-utf8_elks
