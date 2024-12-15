@@ -222,12 +222,15 @@ int main(int argc, char **argv)
   if (argc > 1) {
     for (int i = 1; i < argc; i++) {
       if (argv[i][0] == '-') {
-	if (argc == 2) {
-	  printUsage();
-	  exit(1);
-	}
 	if (argv[i][1] == 'd') {
 	  dmode = 1;
+	  if (argc == 2) {
+	    fptxt = stdin;
+	  }
+	}
+	else {
+	  printUsage();
+	  exit(1);
 	}
       }
       else if (!(fptxt = fopen(argv[i], "r"))) {
