@@ -81,7 +81,7 @@ PC-98向けにBuildする場合はmicrowindows/src/Makefile.elksを以下のよ�
 microwindows/srcでmake -f Makefile.elks clean, make -f Makefile.elksを行うと  
 Buildされ生成されたnxjtxtvがELKSのBuild環境の  
 elks/elkscmd/rootfs_template/binに  
-Window managerをスタートさせるnxstart等とともにコピーされています。
+Nano-XサーバーやWindow managerをスタートさせるnxstart等とともにコピーされています。
 
 この場合のnano-Xのソースコードはmicrowindowsのリポジトリをご参照ください。
 
