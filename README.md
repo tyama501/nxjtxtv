@@ -35,10 +35,19 @@ nxjtxtv -d textfile
 
 sjisutf8等をpipeで繋いで表示することもメモリが足りればできます。  
 sjisutf8 sjisfile | nxjtxtv  
-https://github.com/tyama501/sjis-to-utf8_elks
+https://github.com/tyama501/sjis-to-utf8_elks  
+
+現状、Window manager上のnxtermからsjisutf8のパイプを用いて起動した場合、  
+Windowを動かすと次のページに進んでしまうようです。  
+Window managerを用いる場合は一度変換結果をファイルに落として開いてください。  
 
 ## Build
 このテキストViewerのBuildにはELKSのBuild環境が必要です。  
+Nano-XのWindow managerに対応したalpha_0_5以降のbuildにはmicrowindowsリポジトリのBuild環境も必要です。  
+microwindowsリポジトリ  
+https://github.com/ghaerr/microwindows
+
+**(1) alpha_0_4以前のBuild方法**  
 ELKSのBuild環境構築後、elks/elkscmd/nano-X/demos/にnxjtxtv.cを置き、  
 elks/elkscmd/nano-X/Makefileに以下を加えて下さい。  
 
@@ -50,6 +59,29 @@ elks/elkscmd/nano-X/Makefileに以下を加えて下さい。
 elks/elkscmd/nano-X/でmake clean, makeを行うと  
 elks/elkscmd/nano-X/bin/にnxjtxtvができます。  
   
-このテキストViewerで使われているnano-XのソースコードはELKSのリポジトリをご参照ください。
+この場合のnano-XのソースコードはELKSのリポジトリをご参照ください。  
 https://github.com/ghaerr/elks/tree/master/elkscmd/nano-X
+  
+**(2) alpha_0_5以降のBuild方法**  
+ELKSのBuild環境で. ./env.shを行ってください。  
+microwindowsリポジトリのBuild環境構築後、microwindows/src/demos/nanox/にnxjtxtv.cを置き、  
+microwindows/src/demos/nanox/Makefile.elksに以下を加えて下さい。  
+
+    $(BIN)nxjtxtv    \
+    ...
+    $(BIN)nxjtxtv: nxjtxtv.o $(NXLIB)
+        $(LD) $(LDFLAGS) -o $@ $^ $(LDLIBS)
+
+PC-98向けにBuildする場合はmicrowindows/src/Makefile.elksを以下のように変更してください。  
+
+    CONFIG_ARCH_IBMPC=n
+    CONFIG_HW_VGA=n
+    CONFIG_ARCH_PC98=y
+
+microwindows/srcでmake -f Makefile.elks clean, make -f Makefile.elksを行うと  
+Buildされ生成されたnxjtxtvがELKSのBuild環境の  
+elks/elkscmd/rootfs_template/binに  
+Window managerをスタートさせるnxstart等とともにコピーされています。
+
+この場合のnano-Xのソースコードはmicrowindowsのリポジトリをご参照ください。
 
