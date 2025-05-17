@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <signal.h>
-#include "nano-X.h"
+#include <nano-X.h>
 
 #define HAVEBLIT 0
 #define FONT_NAME "misaki"
@@ -24,6 +24,7 @@ static GR_BITMAP bitmaptxt[16];
 static GR_EVENT gr_eve;
 
 static FILE *fptxt;
+static long ftop;
 
 static font_header_t font_header[FILE_COUNT];
 static char __far *fontbmp[FILE_COUNT];
@@ -83,7 +84,7 @@ void printKeyM(void)
   char key_m[] = "n: next page, q : quit";
   int mi = 0;
 
-  GrSetGCForeground(gc1, WHITE);
+  GrSetGCForeground(gc1, LTGRAY);
   GrSetGCBackground(gc1, BLACK);
 
   while (key_m[mi] != '\0') {
@@ -98,7 +99,7 @@ void printKeyM(void)
   }
 
   GrSetGCForeground(gc1, BLACK);
-  GrSetGCBackground(gc1, WHITE);
+  GrSetGCBackground(gc1, LTGRAY);
 }
 
 /* wait key for next page or quit*/
@@ -114,8 +115,20 @@ void waitKeyEvent(void)
         exit(0);
       }
       else if (gr_eve.keystroke.ch == 'n') {
+	/* Next Page */
+	ftop = ftell(fptxt);
         break;
       }
+    }
+    else if (gr_eve.type == GR_EVENT_TYPE_CLOSE_REQ) {
+      fclose(fptxt);
+      GrClose();
+      exit(0);
+    }
+    else if (gr_eve.type == GR_EVENT_TYPE_EXPOSURE) {
+      /* Redraw */
+      fseek(fptxt, ftop, SEEK_SET);
+      break;
     }
   }
 }
@@ -243,6 +256,8 @@ int main(int argc, char **argv)
     fptxt = stdin;
   }
 
+  ftop = ftell(fptxt);
+
   /* start nano-X */
   if (GrOpen() < 0) {
     exit(1);
@@ -250,27 +265,27 @@ int main(int argc, char **argv)
 
   GrGetScreenInfo(&si);
 
-  w1 = GrNewWindow(GR_ROOT_WINDOW_ID, 8, 8, si.cols - 16, si.rows - 24, 1, WHITE, LTBLUE);
+  w1 = GrNewWindowEx(GR_WM_PROPS_APPWINDOW, "nxjtxtv", GR_ROOT_WINDOW_ID, 8, 8, si.cols - 16, si.rows - 64, LTGRAY);
 
   if (dmode) {
     text_col = (si.cols - 16) / 16 - 2;
-    text_row = (si.rows - 24) / 16 - 4;
+    text_row = (si.rows - 64) / 16 - 4;
   }
   else {
     text_col = (si.cols - 16) / 8 - 2;
-    text_row = (si.rows - 24) / 8 - 4;
+    text_row = (si.rows - 64) / 8 - 4;
   }
 
-  GrSelectEvents(w1, GR_EVENT_MASK_KEY_DOWN);
+  GrSelectEvents(w1, GR_EVENT_MASK_EXPOSURE | GR_EVENT_MASK_KEY_DOWN | GR_EVENT_MASK_CLOSE_REQ);
 
-  GdHideCursor();
+  //GdHideCursor();
 
   GrMapWindow(w1);
 
   gc1 = GrNewGC();
 
   GrSetGCForeground(gc1, BLACK);
-  GrSetGCBackground(gc1, WHITE);
+  GrSetGCBackground(gc1, LTGRAY);
 
 
   while ((utf8_c = getc(fptxt)) != EOF) {
