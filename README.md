@@ -75,7 +75,7 @@ microwindows/src/demos/nanox/Makefile.elksに以下を加えて下さい。
 PC-98向けにBuildする場合はmicrowindows/src/Makefile.elksを以下のように変更してください。  
 
     CONFIG_ARCH_IBMPC=n
-    CONFIG_HW_VGA=n
+    SCREEN_CGA=n
     CONFIG_ARCH_PC98=y
 
 microwindows/srcでmake -f Makefile.elks clean, make -f Makefile.elksを行うと  
