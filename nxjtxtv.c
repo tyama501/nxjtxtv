@@ -85,7 +85,7 @@ void printKeyM(void)
   char key_m[] = "n: next page, q : quit";
   int mi = 0;
 
-  GrSetGCForeground(gc1, LTGRAY);
+  GrSetGCForeground(gc1, WHITE);
   GrSetGCBackground(gc1, BLACK);
 
   while (key_m[mi] != '\0') {
@@ -100,7 +100,7 @@ void printKeyM(void)
   }
 
   GrSetGCForeground(gc1, BLACK);
-  GrSetGCBackground(gc1, LTGRAY);
+  GrSetGCBackground(gc1, WHITE);
 }
 
 /* wait key for next page or quit*/
@@ -273,7 +273,7 @@ int main(int argc, char **argv)
 
   GrGetScreenInfo(&si);
 
-  w1 = GrNewWindowEx(GR_WM_PROPS_APPWINDOW, "nxjtxtv", GR_ROOT_WINDOW_ID, 8, 8, si.cols - 16, si.rows - 64, LTGRAY);
+  w1 = GrNewWindowEx(GR_WM_PROPS_APPWINDOW, "nxjtxtv", GR_ROOT_WINDOW_ID, 8, 8, si.cols - 16, si.rows - 64, WHITE);
 
   if (dmode) {
     text_col = (si.cols - 16) / 16 - 2;
@@ -293,7 +293,7 @@ int main(int argc, char **argv)
   gc1 = GrNewGC();
 
   GrSetGCForeground(gc1, BLACK);
-  GrSetGCBackground(gc1, LTGRAY);
+  GrSetGCBackground(gc1, WHITE);
 
 
   while (1) {
