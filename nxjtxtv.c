@@ -33,6 +33,7 @@ static int __far *fontoffset[FILE_COUNT];
 static int text_col;
 static int text_row;
 static int dmode = 0;
+static int detect_eof = 0;
 
 /* print usage */
 void printUsage(void)
@@ -115,9 +116,16 @@ void waitKeyEvent(void)
         exit(0);
       }
       else if (gr_eve.keystroke.ch == 'n') {
-        /* Next Page */
-        ftop = ftell(fptxt);
-        break;
+        if (!detect_eof) {
+          /* Next Page */
+          ftop = ftell(fptxt);
+          break;
+        }
+        else {
+          fclose(fptxt);
+          GrClose();
+          exit(0);
+        }
       }
     }
     else if (gr_eve.type == GR_EVENT_TYPE_CLOSE_REQ) {
@@ -288,7 +296,15 @@ int main(int argc, char **argv)
   GrSetGCBackground(gc1, LTGRAY);
 
 
-  while ((utf8_c = getc(fptxt)) != EOF) {
+  while (1) {
+
+    if ((utf8_c = getc(fptxt)) == EOF) {
+      detect_eof = 1;
+      clearRow(x, y);
+      waitKeyEvent();
+      y = 0;
+      continue;
+    }
 
     /* Convert UTF-8 to Unicode */
     if ((utf8_c & 0xF0) == 0xF0) {
@@ -351,12 +367,5 @@ int main(int argc, char **argv)
     }
   }
 
-  /* clear */
-  clearRow(x, y);
-
-  waitKeyEvent();
-
-  fclose(fptxt);
-  GrClose();
   return 0;
 }
