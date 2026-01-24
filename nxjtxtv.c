@@ -53,25 +53,25 @@ void printUni(unsigned long uni_c)
       getoffset = fontoffset[i] + (uni_c - font_header[i].firstchar);
       getbmp = fontbmp[i] + *getoffset;
       if (dmode) {
-	for (int j = 0; j < 16; j+=2) {
-	  sbmp = *getbmp;
-	  bitmaptxt[j] = 0;
-	  for (int k = 0; k < 8; k++) {
-	    bitmaptxt[j] <<= 2;
-	    if (sbmp & 0x80) {
-	      bitmaptxt[j] |= 3;
-	    }
-	    sbmp <<= 1;
-	  }
-	  bitmaptxt[j+1] = bitmaptxt[j];
-	  getbmp++;
-	}
+        for (int j = 0; j < 16; j+=2) {
+          sbmp = *getbmp;
+          bitmaptxt[j] = 0;
+          for (int k = 0; k < 8; k++) {
+            bitmaptxt[j] <<= 2;
+            if (sbmp & 0x80) {
+              bitmaptxt[j] |= 3;
+            }
+            sbmp <<= 1;
+          }
+          bitmaptxt[j+1] = bitmaptxt[j];
+          getbmp++;
+        }
       }
       else {
-	for (int j = 0; j < 8; j++) {
-	  bitmaptxt[j] = (*getbmp << 8);
-	  getbmp++;
-	}
+        for (int j = 0; j < 8; j++) {
+          bitmaptxt[j] = (*getbmp << 8);
+          getbmp++;
+        }
       }
       break;
     }
@@ -115,8 +115,8 @@ void waitKeyEvent(void)
         exit(0);
       }
       else if (gr_eve.keystroke.ch == 'n') {
-	/* Next Page */
-	ftop = ftell(fptxt);
+        /* Next Page */
+        ftop = ftell(fptxt);
         break;
       }
     }
@@ -235,20 +235,20 @@ int main(int argc, char **argv)
   if (argc > 1) {
     for (int i = 1; i < argc; i++) {
       if (argv[i][0] == '-') {
-	if (argv[i][1] == 'd') {
-	  dmode = 1;
-	  if (argc == 2) {
-	    fptxt = stdin;
-	  }
-	}
-	else {
-	  printUsage();
-	  exit(1);
-	}
+        if (argv[i][1] == 'd') {
+          dmode = 1;
+          if (argc == 2) {
+            fptxt = stdin;
+          }
+        }
+        else {
+          printUsage();
+          exit(1);
+        }
       }
       else if (!(fptxt = fopen(argv[i], "r"))) {
-	printf("Cannot open %s\n", argv[i]);
-	exit(1);
+        printf("Cannot open %s\n", argv[i]);
+        exit(1);
       }
     }
   }
@@ -331,10 +331,10 @@ int main(int argc, char **argv)
       printUni(uni_c);
 
       if (dmode) {
-	GrBitmap(w1, gc1, 16+x*16, 16+y*16, 16, 16, bitmaptxt);
+        GrBitmap(w1, gc1, 16+x*16, 16+y*16, 16, 16, bitmaptxt);
       }
       else {
-	GrBitmap(w1, gc1, 8+x*8, 8+y*8, 8, 8, bitmaptxt);
+        GrBitmap(w1, gc1, 8+x*8, 8+y*8, 8, 8, bitmaptxt);
       }
 
       if (x < text_col-1) {
