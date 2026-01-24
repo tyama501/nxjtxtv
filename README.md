@@ -59,7 +59,7 @@ elks/elkscmd/nano-X/Makefileに以下を加えて下さい。
 elks/elkscmd/nano-X/でmake clean, makeを行うと  
 elks/elkscmd/nano-X/bin/にnxjtxtvができます。  
   
-この場合のnano-XのソースコードはELKSのリポジトリをご参照ください。  
+この場合のNano-XのソースコードはELKSのリポジトリをご参照ください。  
 https://github.com/ghaerr/elks/tree/master/elkscmd/nano-X
   
 **(2) alpha_0_5以降のBuild方法**  
@@ -79,9 +79,8 @@ PC-98向けにBuildする場合はmicrowindows/src/Makefile.elksを以下のよ�
     CONFIG_ARCH_PC98=y
 
 microwindows/srcでmake -f Makefile.elks clean, make -f Makefile.elksを行うと  
-Buildされ生成されたnxjtxtvがELKSのBuild環境の  
-elks/elkscmd/rootfs_template/binに  
-Nano-Xサーバーであるnano-xやWindow managerをスタートさせるnxstart等とともにコピーされています。
+Buildされ生成されたnxjtxtvがmicrowindows/src/binに  
+Nano-Xサーバーであるnano-xやWindow managerをスタートさせるnxstart等とともにできます。
 
-この場合のnano-Xのソースコードはmicrowindowsのリポジトリをご参照ください。
+この場合のNano-Xのソースコードはmicrowindowsのリポジトリをご参照ください。
 
